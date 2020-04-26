@@ -1,6 +1,6 @@
-# Fable Minimal App
+# Fable Minimal App With OpenLayers
 
-This is a small Fable app project so you can easily get started and add your own code easily in it.
+This is a small Fable app prototype with [OpenLayers library](https://openlayers.org/) for trying out Fable - OpenLayers integration
 
 ## Requirements
 
