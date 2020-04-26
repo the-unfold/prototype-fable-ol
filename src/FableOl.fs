@@ -4,63 +4,62 @@ open Fable.Core
 open Fable.Core.JS
 open Fable.Core.JsInterop
 
-    type [<AllowNullLiteral>] Coordinate =
-        inherit Object
+type Coordinate =
+    inherit Object
 
-    type [<AllowNullLiteral>] View =
-        inherit Object
+type View =
+    inherit Object
 
-        abstract getCenter: unit -> Coordinate
-        abstract setCenter: center: Coordinate -> unit
-        abstract getZoom: unit -> float
-        abstract setZoom: zoom: float -> unit
+    abstract getCenter: unit -> Coordinate
+    abstract setCenter: center: Coordinate -> unit
+    abstract getZoom: unit -> float
+    abstract setZoom: zoom: float -> unit
 
-    type [<AllowNullLiteral>] Map =
-        inherit Object
+type Map =
+    inherit Object
 
-    type [<AllowNullLiteral>] Layer =
-        inherit Object
+type Layer =
+    inherit Object
 
-    type [<AllowNullLiteral>] OSM =
-        inherit Object
+type OSM =
+    inherit Object
 
-    [<AllowNullLiteral>]
-    type ViewOptions = 
-        abstract center: float * float with get, set
-        abstract zoom: float with get, set
-    
-    [<AllowNullLiteral>]
-    type MapOptions = 
-        abstract target: string with get, set
-        abstract layers: Layer array with get, set
-        abstract view: View with get, set
-    
-    [<AllowNullLiteral>]
-    type TileLayerOptions = 
-        abstract source: OSM with get, set
-    
-    // type [<AllowNullLiteral>] OSMOptions =
+type VectorSource =
+    inherit Object
 
-    // type [<AllowNullLiteral>] UrlTile =
-    //     inherit Tile
+type ViewOptions = 
+    abstract center: float * float with get, set
+    abstract zoom: float with get, set
 
-    // type [<AllowNullLiteral>] TileImage =
-    //     inherit UrlTile
+type MapOptions = 
+    abstract target: string with get, set
+    abstract layers: Layer array with get, set
+    abstract view: View with get, set
 
-    // type [<AllowNullLiteral>] XYZ =
-    //     inherit TileImage
+type VectorSourceOptions =
+    abstract wrapX: bool with get, set
 
-   
+type TileLayerOptions = 
+    abstract source: OSM with get, set
 
-    type [<AllowNullLiteral>] OSMStatic =
-        [<Emit "new $0()">] abstract Create: unit -> OSM
+type VectorLayerOptions =
+    abstract source: VectorSource with get, set
 
-    type [<AllowNullLiteral>] MapStatic =
-        /// <param name="options">Map options.</param>
-        [<Emit "new $0($1...)">] abstract Create: options: MapOptions -> Map
+type OSMStatic =
+    [<Emit "new $0()">] abstract Create: unit -> OSM
 
-    type [<AllowNullLiteral>] ViewStatic =
-        [<Emit "new $0($1...)">] abstract Create: options: ViewOptions -> View
+type VectorSourceStatic =
+    [<Emit "new $0($1...)">] abstract Create: VectorSourceOptions -> VectorSource
 
-    type [<AllowNullLiteral>] TileLayerStatic =
-        [<Emit "new $0($1...)">] abstract Create: options: TileLayerOptions -> Layer
+type MapStatic =
+    /// <param name="options">Map options.</param>
+    [<Emit "new $0($1...)">] abstract Create: options: MapOptions -> Map
+
+type ViewStatic =
+    [<Emit "new $0($1...)">] abstract Create: options: ViewOptions -> View
+
+type TileLayerStatic =
+    [<Emit "new $0($1...)">] abstract Create: options: TileLayerOptions -> Layer
+
+type VectorLayerStatic = 
+    [<Emit "new $0($1...)">] abstract Create: options: VectorLayerOptions -> Layer

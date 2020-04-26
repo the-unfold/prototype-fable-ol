@@ -7,33 +7,44 @@ open FableOl
 
 importAll "ol/ol.css"
 
-[<Import("default", "ol/Map")>]
+[<ImportDefault("ol/Map")>]
 let map: MapStatic = jsNative
 
-[<Import("default", "ol/View")>]
+[<ImportDefault("ol/View")>]
 let view: ViewStatic = jsNative
 
-[<Import("default", "ol/layer/Tile")>]
+[<ImportDefault("ol/layer/Tile")>]
 let tileLayer: TileLayerStatic = jsNative
 
-[<Import("default", "ol/source/OSM")>]
+[<ImportDefault("ol/layer/Vector")>]
+let vectorLayer: VectorLayerStatic = jsNative
+
+[<ImportDefault("ol/source/OSM")>]
 let osm: OSMStatic = jsNative
+
+[<ImportDefault("ol/source/Vector")>]
+let vectorSource: VectorSourceStatic = jsNative
 
 [<Import("fromLonLat", "ol/proj")>]
 let fromLonLat: float * float -> float * float = jsNative
 
-let layerOptions = createEmpty<TileLayerOptions>
-do layerOptions.source <- osm.Create ()
+let tileLayerOptions = jsOptions<TileLayerOptions>(fun x -> 
+    x.source <- osm.Create ())
 
+let vectorSourceOptions = jsOptions<VectorSourceOptions>(fun x -> 
+    x.wrapX <- false)
 
-let viewOptions = createEmpty<ViewOptions>
-do viewOptions.center <- fromLonLat (82.921733, 55.029910)
-do viewOptions.zoom <- 16.0
+let vectorLayerOptions = jsOptions<VectorLayerOptions>(fun x ->
+    x.source <- vectorSource.Create vectorSourceOptions)
 
-let mapOptions = createEmpty<MapOptions>
-do mapOptions.target <- "map"
-do mapOptions.layers <- [| tileLayer.Create layerOptions |]
-do mapOptions.view <- view.Create viewOptions
+let viewOptions = jsOptions<ViewOptions>(fun x ->
+    x.center <- fromLonLat (82.921733, 55.029910)
+    x.zoom <- 16.0)
+
+let mapOptions = jsOptions<MapOptions>(fun x -> 
+    x.target <- "map"
+    x.layers <- [| tileLayer.Create tileLayerOptions; vectorLayer.Create vectorLayerOptions |]
+    x.view <- view.Create viewOptions)
 
 let theMap = map.Create mapOptions
 
