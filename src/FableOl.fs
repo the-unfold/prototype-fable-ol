@@ -24,20 +24,21 @@ open Fable.Core.JsInterop
     type [<AllowNullLiteral>] OSM =
         inherit Object
 
-    type ViewOptions = {
-        center: float * float
-        zoom: float
-    }
-
-    type MapOptions = {
-        target: string
-        layers: Layer array
-        view: View
-    }
-
-    type TileLayerOptions = {
-        source: OSM
-    }
+    [<AllowNullLiteral>]
+    type ViewOptions = 
+        abstract center: float * float with get, set
+        abstract zoom: float with get, set
+    
+    [<AllowNullLiteral>]
+    type MapOptions = 
+        abstract target: string with get, set
+        abstract layers: Layer array with get, set
+        abstract view: View with get, set
+    
+    [<AllowNullLiteral>]
+    type TileLayerOptions = 
+        abstract source: OSM with get, set
+    
     // type [<AllowNullLiteral>] OSMOptions =
 
     // type [<AllowNullLiteral>] UrlTile =
