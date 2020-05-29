@@ -3,48 +3,57 @@ module App
 open Fable.Core
 open Fable.Core.JsInterop
 open Browser.Dom
-open FableOl
+
+open Ol.Geom
+open Ol.Source.Vector
+open Ol.Source.OSM
+open Ol.Layer.Tile
+open Ol.Layer.Vector
+open Ol.Interaction.Draw
+open Ol.View
+open Ol.Map
 
 importAll "ol/ol.css"
 
 [<ImportDefault("ol/Map")>]
-let map: MapStatic = jsNative
+let mapStatic: MapStatic = jsNative
 
 [<ImportDefault("ol/View")>]
-let view: ViewStatic = jsNative
+let viewStatic: ViewStatic = jsNative
 
 [<ImportDefault("ol/layer/Tile")>]
-let tileLayer: TileLayerStatic = jsNative
+let tileLayerStatic: TileLayerStatic = jsNative
 
 [<ImportDefault("ol/layer/Vector")>]
-let vectorLayer: VectorLayerStatic = jsNative
+let vectorLayerStatic: VectorLayerStatic = jsNative
 
 [<ImportDefault("ol/source/OSM")>]
-let osm: OSMStatic = jsNative
+let osmStatic: OSMStatic = jsNative
 
 [<ImportDefault("ol/source/Vector")>]
-let vectorSource: VectorSourceStatic = jsNative
+let vectorSourceStatic: VectorSourceStatic = jsNative
+
+[<ImportDefault("ol/interaction/Draw")>]
+let drawStatic: DrawStatic = jsNative
 
 [<Import("fromLonLat", "ol/proj")>]
 let fromLonLat: float * float -> float * float = jsNative
 
-let tileLayerOptions = jsOptions<TileLayerOptions>(fun x -> 
-    x.source <- osm.Create ())
-
-let vectorSourceOptions = jsOptions<VectorSourceOptions>(fun x -> 
-    x.wrapX <- false)
-
-let vectorLayerOptions = jsOptions<VectorLayerOptions>(fun x ->
-    x.source <- vectorSource.Create vectorSourceOptions)
-
-let viewOptions = jsOptions<ViewOptions>(fun x ->
-    x.center <- fromLonLat (82.921733, 55.029910)
-    x.zoom <- 16.0)
+let vectorSource = vectorSourceStatic.Create !!{| wrapX = false |}
 
 let mapOptions = jsOptions<MapOptions>(fun x -> 
     x.target <- "map"
-    x.layers <- [| tileLayer.Create tileLayerOptions; vectorLayer.Create vectorLayerOptions |]
-    x.view <- view.Create viewOptions)
+    x.layers <- [| 
+        tileLayerStatic.Create !!{|source = osmStatic.Create ()|}
+        vectorLayerStatic.Create !!{|source = vectorSource|} 
+    |]
+    
+    x.view <- viewStatic.Create !!{|center = fromLonLat (82.921733, 55.029910); zoom = 16.0|})
 
-let theMap = map.Create mapOptions
+let theMap = mapStatic.Create mapOptions
+let draw = drawStatic.Create !!{|source = vectorSource; ``type``= Circle|}
+
+do draw.on ("drawend", (fun evt -> console.log evt)) |> ignore
+do theMap.on("click", (fun evt -> console.log evt)) |> ignore
+do theMap.addInteraction draw
 
